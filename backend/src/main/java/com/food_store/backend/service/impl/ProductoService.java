@@ -1,11 +1,12 @@
-package com.food_store.backend.service;
+package com.food_store.backend.service.impl;
 
 import com.food_store.backend.entity.Categoria;
 import com.food_store.backend.entity.Producto;
-import com.food_store.backend.entity.dto.ProductoCreateDto;
+import com.food_store.backend.entity.dto.productoDtos.ProductoCreateDto;
 import com.food_store.backend.entity.mapper.ProductoMapper;
 import com.food_store.backend.repository.ICategoriaRepository;
 import com.food_store.backend.repository.IProductoRepository;
+import com.food_store.backend.service.IProductoService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

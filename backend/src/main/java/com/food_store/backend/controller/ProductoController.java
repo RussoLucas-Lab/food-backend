@@ -1,13 +1,10 @@
 package com.food_store.backend.controller;
 
 import com.food_store.backend.entity.Producto;
-import com.food_store.backend.entity.dto.CategoriaDto;
-import com.food_store.backend.entity.dto.ProductoCreateDto;
-import com.food_store.backend.entity.dto.ProductoDto;
-import com.food_store.backend.entity.mapper.CategoriaMapper;
+import com.food_store.backend.entity.dto.productoDtos.ProductoCreateDto;
+import com.food_store.backend.entity.dto.productoDtos.ProductoDto;
 import com.food_store.backend.entity.mapper.ProductoMapper;
 import com.food_store.backend.service.IProductoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

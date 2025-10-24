@@ -1,17 +1,22 @@
-package com.food_store.backend.service;
+package com.food_store.backend.service.impl;
 
 import com.food_store.backend.entity.*;
-import com.food_store.backend.entity.dto.DetalleRequestDto;
-import com.food_store.backend.entity.dto.PedidoCreateDto;
+import com.food_store.backend.entity.dto.DetallePedidoDtos.DetalleRequestDto;
+import com.food_store.backend.entity.dto.PedidoDtos.PedidoCreateDto;
+import com.food_store.backend.entity.dto.UsuarioDtos.UsuarioDto;
 import com.food_store.backend.entity.enums.Estado;
 import com.food_store.backend.entity.mapper.DetallePedidoMapper;
 import com.food_store.backend.entity.mapper.PedidoMapper;
+import com.food_store.backend.entity.mapper.UsuarioMapper;
 import com.food_store.backend.repository.IPedidoRepository;
+import com.food_store.backend.service.IPedidoService;
+import com.food_store.backend.service.IProductoService;
+import com.food_store.backend.service.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PedidoService implements IPedidoService{
+public class PedidoService implements IPedidoService {
 
     private final IPedidoRepository iPedidoRepository;
     private final IProductoService iProductoService;
@@ -44,10 +49,9 @@ public class PedidoService implements IPedidoService{
             detalleCreate.setProducto(producto);
             pedidoCreate.getDetalles().add(detalleCreate);
         }
-        Usuario usuario = iUsuarioService.buscarPorId(pedidoCreateDto.getIdUsuario())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuarioDto usuarioDto = iUsuarioService.buscarPorId(pedidoCreateDto.getIdUsuario());
 
-        pedidoCreate.setUsuario(usuario);
+        pedidoCreate.setUsuario(UsuarioMapper.toEntity(usuarioDto));
         iPedidoRepository.save(pedidoCreate);
 
         return pedidoCreate ;
