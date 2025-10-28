@@ -1,18 +1,15 @@
 package com.food_store.backend.controller;
 
-import com.food_store.backend.entity.Producto;
+import com.food_store.backend.entity.dto.categoriaDtos.CategoriaCreateDto;
 import com.food_store.backend.entity.dto.categoriaDtos.CategoriaDto;
 import com.food_store.backend.entity.dto.productoDtos.ProductoCreateDto;
 import com.food_store.backend.entity.dto.productoDtos.ProductoDto;
-import com.food_store.backend.entity.mapper.ProductoMapper;
 import com.food_store.backend.service.IProductoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/producto")
@@ -63,6 +60,24 @@ public class ProductoController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);//400
+        }
+    }
+    @PutMapping("/actualizarProducto/{id}")
+    public ResponseEntity<?> actualizarProducto(@PathVariable Long id, @RequestBody ProductoCreateDto productoCreateDto){
+        try {
+            ProductoDto response = iProductoService.actualizarProducto(id, productoCreateDto);
+            return  new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @PutMapping("/actualizarProducto/{id}/nuevoStock/{stock}")
+    public ResponseEntity<?> actualizarStock(@PathVariable Long id,@PathVariable Integer stock){
+        try {
+            ProductoDto response = iProductoService.actualizarStock(id, stock);
+            return  new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

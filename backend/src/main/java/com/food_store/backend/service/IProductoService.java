@@ -1,5 +1,6 @@
 package com.food_store.backend.service;
 
+import com.food_store.backend.entity.Producto;
 import com.food_store.backend.entity.dto.productoDtos.ProductoCreateDto;
 import com.food_store.backend.entity.dto.productoDtos.ProductoDto;
 
@@ -12,4 +13,7 @@ public interface IProductoService {
     ProductoDto buscarPorId(Long id);
     ProductoDto crearProducto(ProductoCreateDto productoCreateDto);
     void eliminarProducto (Long id);
+    ProductoDto actualizarProducto(Long id, ProductoCreateDto productoCreateDto);
+    ProductoDto actualizarStock(Long id, Integer stock);
+    Producto validarId(Long id);
 }

@@ -14,4 +14,5 @@ public interface ICategoriaService {
     CategoriaDto buscarCategoria(String categoriaNombre);
     CategoriaDto buscarCategoriaPorId(Long id);
     void eliminarCategoria(String categoria);
+    CategoriaDto actualizarCategoria(Long id, CategoriaCreateDto categoriaCreateDto);
 }

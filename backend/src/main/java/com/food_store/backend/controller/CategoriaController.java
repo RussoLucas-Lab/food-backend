@@ -74,4 +74,18 @@ public class CategoriaController {
         }
     }
 
+    @PutMapping("/actualizarCategoria/{id}")
+    public ResponseEntity<?> actualizarCategoria(@PathVariable Long id, @RequestBody CategoriaCreateDto categoriaCreateDto){
+
+        try {
+            CategoriaDto response = iCategoriaService.actualizarCategoria(id, categoriaCreateDto);
+            return  new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
+
 }

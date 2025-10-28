@@ -27,6 +27,22 @@ public class ProductoService implements IProductoService {
         this.iCategoriaRepository = iCategoriaRepository;
     }
 
+    @Override
+    public Producto validarId(Long id) {
+        if (id == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El ID no puede ser nulo"
+            );
+        }
+        Producto productoSearch = iProductoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Producto con ID " + id + " no encontrado"
+                ));
+        return productoSearch;
+    }
+
 
     @Override
     public List<ProductoDto> listarProductos() {
@@ -37,18 +53,7 @@ public class ProductoService implements IProductoService {
 
     @Override
     public ProductoDto buscarPorId(Long id) {
-        if (id == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "El ID no puede ser nulo"
-            );
-        }
-        Producto productoSearch = iProductoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND,
-                "Categoria con ID " + id + " no encontrado"
-        ));
-        return ProductoMapper.toDto(productoSearch);
+        return ProductoMapper.toDto(validarId(id));
     }
 
 
@@ -70,4 +75,43 @@ public class ProductoService implements IProductoService {
         ProductoDto productoDelete = buscarPorId(id);
         iProductoRepository.deleteById(productoDelete.getId());
     }
+
+    @Override
+    public ProductoDto actualizarProducto(Long id, ProductoCreateDto productoCreateDto){
+        Producto productoUpdate = validarId(id);
+
+        Categoria categoriaUpdate = iCategoriaRepository.findById(productoCreateDto.getCategoriaId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Categoria con id" + productoCreateDto.getCategoriaId() + " no encontrada"
+                ));
+
+
+        productoUpdate.setNombre(productoCreateDto.getNombre());
+        productoUpdate.setDescripcion(productoCreateDto.getDescripcion());
+        productoUpdate.setPrecio(productoCreateDto.getPrecio());
+        productoUpdate.setImgURL(productoCreateDto.getImgURL());
+        productoUpdate.setStock(productoCreateDto.getStock());
+        productoUpdate.setCategoria(categoriaUpdate);
+
+        return ProductoMapper.toDto(iProductoRepository.save(productoUpdate));
+    }
+
+    @Override
+    public ProductoDto actualizarStock(Long id, Integer stock) {
+        Producto productoUpdate = validarId(id);
+        if( stock == null || stock < 0){
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El stock no puede ser negativo ni nulo"
+            );
+        }
+
+        productoUpdate.setStock(stock);
+        iProductoRepository.save(productoUpdate);
+
+        return ProductoMapper.toDto(productoUpdate);
+    }
+
+
 }

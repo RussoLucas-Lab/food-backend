@@ -1,7 +1,6 @@
 package com.food_store.backend.service.impl;
 
 import com.food_store.backend.entity.Categoria;
-import com.food_store.backend.entity.Usuario;
 import com.food_store.backend.entity.dto.categoriaDtos.CategoriaCreateDto;
 import com.food_store.backend.entity.dto.categoriaDtos.CategoriaDto;
 import com.food_store.backend.entity.mapper.CategoriaMapper;
@@ -91,6 +90,30 @@ public class CategoriaService implements ICategoriaService {
     public void eliminarCategoria(String categoria) {
         CategoriaDto categoriaSearch = buscarCategoria(categoria);
         iCategoriaRepository.deleteByNombre(categoriaSearch.getNombre());
+    }
+    @Override
+    public CategoriaDto actualizarCategoria(Long id, CategoriaCreateDto categoriaCreateDto){
+        if (id == null) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El ID no puede ser nulo"
+            );
+        }
+        Categoria categoriaUpdate = iCategoriaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Categoria con ID " + id + " no encontrado"
+                ));
+
+
+        if (categoriaCreateDto.getNombre().isBlank() || categoriaCreateDto.getNombre().isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El nombre de la categoría no puede ser nulo o estar vacío"
+            );
+        }
+        categoriaUpdate.setNombre(categoriaCreateDto.getNombre().trim().toLowerCase());
+        return CategoriaMapper.toDto(iCategoriaRepository.save(categoriaUpdate));
     }
 
 
