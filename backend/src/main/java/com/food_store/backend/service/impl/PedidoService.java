@@ -42,13 +42,16 @@ public class PedidoService implements IPedidoService {
         pedidoCreate.setEstado(Estado.valueOf(estadoStr.toUpperCase()));
 
         //Agregamos los detalles
-        for (DetalleRequestDto detalle : pedidoCreateDto.getDetalles()) {
-            Producto producto = iProductoService.buscarPorId(detalle.getProductoId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-            DetallePedido detalleCreate = DetallePedidoMapper.toEntity(detalle);
-            detalleCreate.setProducto(producto);
-            pedidoCreate.getDetalles().add(detalleCreate);
-        }
+
+        //ARREGLAR PRODUCTO
+
+//        for (DetalleRequestDto detalle : pedidoCreateDto.getDetalles()) {
+//            Producto producto = iProductoService.buscarPorId(detalle.getProductoId())
+//                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+//            DetallePedido detalleCreate = DetallePedidoMapper.toEntity(detalle);
+//            detalleCreate.setProducto(producto);
+//            pedidoCreate.getDetalles().add(detalleCreate);
+//        }
         UsuarioDto usuarioDto = iUsuarioService.buscarPorId(pedidoCreateDto.getIdUsuario());
 
         pedidoCreate.setUsuario(UsuarioMapper.toEntity(usuarioDto));

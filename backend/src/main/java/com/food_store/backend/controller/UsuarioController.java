@@ -25,10 +25,10 @@ public class UsuarioController {
     public ResponseEntity<?> listarUsuarios() {
         try {
             List<UsuarioDto> usuarios = iUsuarioService.listarUsuarios();
-            return new ResponseEntity<>(usuarios, HttpStatus.OK);
+            return new ResponseEntity<>(usuarios, HttpStatus.OK); //200
 
         } catch (Exception e) {
-            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error interno del servidor", HttpStatus.INTERNAL_SERVER_ERROR); //500
         }
     }
 
@@ -36,9 +36,9 @@ public class UsuarioController {
     public ResponseEntity<?> crearUsuario(@RequestBody UsuarioCreateDto usuarioCreateDto) {
         try {
             UsuarioDto response = iUsuarioService.crearUsuario(usuarioCreateDto);
-            return new ResponseEntity<>(response, HttpStatus.CREATED);
+            return new ResponseEntity<>(response, HttpStatus.CREATED); //201
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);//400
         }
     }
 
@@ -55,8 +55,8 @@ public class UsuarioController {
     @DeleteMapping("/eliminarPorId/{id}")
     public ResponseEntity<?> eliminarPorId(@PathVariable Long id) {
         try {
-            String response = iUsuarioService.eliminarUsuarioPorId(id);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            iUsuarioService.eliminarUsuarioPorId(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); //204
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -74,7 +74,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UsuarioLoginDto usuarioLoginDto){
+    public ResponseEntity<?> login(@RequestBody UsuarioLoginDto usuarioLoginDto) {
         try {
             UsuarioDto usuarioDto = iUsuarioService.login(usuarioLoginDto);
             return new ResponseEntity<>(usuarioDto, HttpStatus.OK);

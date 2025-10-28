@@ -53,7 +53,7 @@ public class UsuarioService implements IUsuarioService {
         if (id == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "El ID no puede ser nulo ni vacío"
+                    "El ID no puede ser nulo"
             );
         }
         Usuario usuarioSearch = iUsuarioRepository.findById(id)
@@ -65,10 +65,9 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public String eliminarUsuarioPorId(Long id) {
+    public void eliminarUsuarioPorId(Long id) {
         UsuarioDto usuarioDedete = buscarPorId(id);
         iUsuarioRepository.deleteById(usuarioDedete.getId());
-        return "Usuario " + id + " eliminado correctamente";
     }
 
     @Override

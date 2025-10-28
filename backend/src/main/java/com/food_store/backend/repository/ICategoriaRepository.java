@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     Optional<Categoria> findByNombre(String categoriaNombre);
     void deleteByNombre(String categoria);
+
 }
