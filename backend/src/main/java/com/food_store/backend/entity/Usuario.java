@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,9 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "usuarios")
-public class Usuario {
+@SQLDelete(sql = "UPDATE usuarios SET eliminado = true WHERE id = ?")
+@Where(clause = "eliminado = false")
+public class Usuario extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

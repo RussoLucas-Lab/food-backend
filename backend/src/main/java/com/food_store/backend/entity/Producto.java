@@ -1,13 +1,17 @@
 package com.food_store.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Producto {
+@SQLDelete(sql = "UPDATE producto SET eliminado = true WHERE id = ?")
+@Where(clause = "eliminado = false")
+public class Producto extends Base {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
