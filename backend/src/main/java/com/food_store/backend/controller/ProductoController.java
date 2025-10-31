@@ -7,6 +7,7 @@ import com.food_store.backend.entity.dto.productoDtos.ProductoDto;
 import com.food_store.backend.service.IProductoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,6 +55,7 @@ public class ProductoController {
 
     }
     @DeleteMapping("/eliminarPorId/{id}")
+    @Transactional
     public ResponseEntity<?> eliminarProductoPorId(@PathVariable Long id){
         try {
             iProductoService.eliminarProducto(id);

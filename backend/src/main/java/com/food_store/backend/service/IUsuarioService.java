@@ -1,5 +1,6 @@
 package com.food_store.backend.service;
 
+import com.food_store.backend.entity.Usuario;
 import com.food_store.backend.entity.dto.UsuarioDtos.UsuarioCreateDto;
 import com.food_store.backend.entity.dto.UsuarioDtos.UsuarioDto;
 import com.food_store.backend.entity.dto.UsuarioDtos.UsuarioLoginDto;
@@ -13,4 +14,5 @@ public interface IUsuarioService {
     void eliminarUsuarioPorId(Long id);
     UsuarioDto buscarPorEmail(String email);
     UsuarioDto login(UsuarioLoginDto usuarioLoginDto);
+    Usuario validarId(Long id);
 }

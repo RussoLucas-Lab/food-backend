@@ -3,6 +3,8 @@ package com.food_store.backend.entity;
 import com.food_store.backend.entity.enums.Estado;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,7 +17,9 @@ import java.util.List;
 @Builder
 @Table(name = "pedidos")
 @Entity
-public class Pedido {
+@SQLDelete(sql = "UPDATE pedidos SET eliminado = true WHERE id_pedido = ?")
+@Where(clause = "eliminado = false")
+public class Pedido extends Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,6 +34,7 @@ public class Pedido {
     private List<DetallePedido> detalles = new ArrayList<>();
 
     private LocalDate fecha;
+    //@Enumerated(EnumType.STRING)
     private Estado estado;
 
     private double total;

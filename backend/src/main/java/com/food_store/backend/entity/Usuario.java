@@ -31,7 +31,14 @@ public class Usuario extends Base {
     @Column(name = "rol")
     private Role role;
 
-    @OneToMany(mappedBy = "usuario",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Pedido> pedidos = new ArrayList<>();
+
+    @PreRemove
+    public void preEliminado() {
+        for (Pedido p : pedidos) {
+            p.setEliminado(true);
+        }
+    }
 }

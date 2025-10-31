@@ -1,5 +1,6 @@
 package com.food_store.backend.service.impl;
 
+import com.food_store.backend.entity.Producto;
 import com.food_store.backend.entity.Usuario;
 import com.food_store.backend.entity.dto.UsuarioDtos.UsuarioCreateDto;
 
@@ -47,9 +48,8 @@ public class UsuarioService implements IUsuarioService {
 
         return UsuarioMapper.toDto(usuarioCreate);
     }
-
     @Override
-    public UsuarioDto buscarPorId(Long id) {
+    public Usuario validarId(Long id) {
         if (id == null) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
@@ -59,9 +59,14 @@ public class UsuarioService implements IUsuarioService {
         Usuario usuarioSearch = iUsuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Usuario con ID " + id + " no encontrado"
+                        "Producto con ID " + id + " no encontrado"
                 ));
-        return UsuarioMapper.toDto(usuarioSearch);
+        return usuarioSearch;
+    }
+
+    @Override
+    public UsuarioDto buscarPorId(Long id) {
+       return UsuarioMapper.toDto(validarId(id));
     }
 
     @Override

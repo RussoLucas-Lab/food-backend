@@ -1,13 +1,15 @@
 package com.food_store.backend.controller;
 
-import com.food_store.backend.entity.Pedido;
 import com.food_store.backend.entity.dto.PedidoDtos.PedidoCreateDto;
 import com.food_store.backend.entity.dto.PedidoDtos.PedidoDto;
-import com.food_store.backend.entity.mapper.PedidoMapper;
+import com.food_store.backend.entity.enums.Estado;
 import com.food_store.backend.service.IPedidoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/pedido")
@@ -20,12 +22,62 @@ public class PedidoController {
         this.iPedidoService = iPedidoService;
     }
 
-    @PostMapping("/crearPedido")
+    @PostMapping("/crear")
+    public ResponseEntity<?> crearPedido(@RequestBody PedidoCreateDto pedidoCreateDto) {
+        try {
+            PedidoDto response = iPedidoService.crearPedido(pedidoCreateDto);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
-    public ResponseEntity<PedidoDto> crearPedido(@RequestBody PedidoCreateDto pedidoCreateDto){
+    @GetMapping("/listar")
+    public ResponseEntity<?> listarPedidos(){
+        try {
+            List<PedidoDto> response = iPedidoService.listarPedidos();
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @GetMapping("/buscarPorId/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Long id){
+        try {
+            PedidoDto response = iPedidoService.buscarPorId(id);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/eliminar/{id}")
+    @Transactional
+    public ResponseEntity<?> eliminarPedido(@PathVariable Long id){
+        try {
+            iPedidoService.eliminarPedido(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 
-        Pedido response = iPedidoService.crearPedido(pedidoCreateDto);
-        PedidoDto responseDto = PedidoMapper.toDto(response);
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+    @PostMapping("/actualizarEstado/{id}")
+    public ResponseEntity<?> actualizarEstadoPedido(@PathVariable Long id, @RequestBody Estado estado){
+        try {
+            PedidoDto response = iPedidoService.actualizarEestadoPedido(id, estado);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/usuario/{id}")
+    public ResponseEntity<?> pedidosUsuario(@PathVariable Long id){
+        try {
+            List<PedidoDto> response = iPedidoService.pedidosUsuario(id);
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

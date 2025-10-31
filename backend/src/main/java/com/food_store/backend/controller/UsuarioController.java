@@ -6,6 +6,7 @@ import com.food_store.backend.entity.dto.UsuarioDtos.UsuarioLoginDto;
 import com.food_store.backend.service.IUsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,6 +54,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/eliminarPorId/{id}")
+    @Transactional
     public ResponseEntity<?> eliminarPorId(@PathVariable Long id) {
         try {
             iUsuarioService.eliminarUsuarioPorId(id);
