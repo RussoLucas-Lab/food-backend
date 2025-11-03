@@ -13,7 +13,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/usuario")
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     private final IUsuarioService iUsuarioService;
@@ -74,7 +74,7 @@ public class UsuarioController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
+    @CrossOrigin(origins ="http://localhost:5173" )
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioLoginDto usuarioLoginDto) {
         try {

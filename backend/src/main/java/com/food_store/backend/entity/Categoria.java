@@ -35,5 +35,4 @@ public class Categoria extends Base {
             p.setEliminado(true);
         }
     }
-
 }

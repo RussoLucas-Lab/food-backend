@@ -1,7 +1,5 @@
 package com.food_store.backend.controller;
 
-import com.food_store.backend.entity.dto.categoriaDtos.CategoriaCreateDto;
-import com.food_store.backend.entity.dto.categoriaDtos.CategoriaDto;
 import com.food_store.backend.entity.dto.productoDtos.ProductoCreateDto;
 import com.food_store.backend.entity.dto.productoDtos.ProductoDto;
 import com.food_store.backend.service.IProductoService;
