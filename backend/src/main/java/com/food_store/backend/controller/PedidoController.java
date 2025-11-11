@@ -62,9 +62,9 @@ public class PedidoController {
     }
 
     @PostMapping("/actualizarEstado/{id}")
-    public ResponseEntity<?> actualizarEstadoPedido(@PathVariable Long id, @RequestBody Estado estado){
+    public ResponseEntity<?> actualizarEstadoPedido(@PathVariable Long id, @RequestBody PedidoDto pedidoDto){
         try {
-            PedidoDto response = iPedidoService.actualizarEestadoPedido(id, estado);
+            PedidoDto response = iPedidoService.actualizarEestadoPedido(id, pedidoDto.getEstado());
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

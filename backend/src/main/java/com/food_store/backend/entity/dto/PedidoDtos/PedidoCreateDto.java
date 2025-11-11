@@ -7,7 +7,6 @@ import com.food_store.backend.entity.dto.DetallePedidoDtos.DetalleRequestDto;
 import lombok.Builder;
 import lombok.Data;
 
-
 @Data
 @Builder
 public class PedidoCreateDto {

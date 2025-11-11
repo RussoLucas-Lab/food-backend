@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-
 @Service
 public class ProductoService implements IProductoService {
 
     private final IProductoRepository iProductoRepository;
     private final ICategoriaRepository iCategoriaRepository;
+
     public ProductoService(IProductoRepository iProductoRepository, ICategoriaRepository iCategoriaRepository) {
         this.iProductoRepository = iProductoRepository;
         this.iCategoriaRepository = iCategoriaRepository;
@@ -77,7 +77,7 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public ProductoDto actualizarProducto(Long id, ProductoCreateDto productoCreateDto){
+    public ProductoDto actualizarProducto(Long id, ProductoCreateDto productoCreateDto) {
         Producto productoUpdate = validarId(id);
 
         Categoria categoriaUpdate = iCategoriaRepository.findById(productoCreateDto.getCategoriaId())
@@ -100,18 +100,50 @@ public class ProductoService implements IProductoService {
     @Override
     public ProductoDto actualizarStock(Long id, Integer stock) {
         Producto productoUpdate = validarId(id);
-        if( stock == null || stock < 0){
+        if (stock == null || stock < 0) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
                     "El stock no puede ser negativo ni nulo"
             );
         }
-
         productoUpdate.setStock(stock);
         iProductoRepository.save(productoUpdate);
 
         return ProductoMapper.toDto(productoUpdate);
     }
 
+    @Override
+    public Integer obtenerStock(Long id) {
+        Producto producto = validarId(id);
+        return producto.getStock();
+    }
+
+    @Override
+    public void aumentarStock(Long id, Integer cantidad) {
+        Producto producto = validarId(id);
+        Integer stockActual = obtenerStock(producto.getId());
+        if (cantidad == null || cantidad < 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El stock no puede ser negativo ni nulo"
+            );
+        }
+        producto.setStock(stockActual + cantidad);
+        iProductoRepository.save(producto);
+    }
+
+    @Override
+    public void disminuirStock(Long id, Integer cantidad) {
+        Producto producto = validarId(id);
+        Integer stockActual = obtenerStock(producto.getId());
+        if (cantidad == null || cantidad < 0) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "El stock no puede ser negativo ni nulo"
+            );
+        }
+        producto.setStock(stockActual - cantidad);
+        iProductoRepository.save(producto);
+    }
 
 }

@@ -16,4 +16,7 @@ public interface IProductoService {
     ProductoDto actualizarProducto(Long id, ProductoCreateDto productoCreateDto);
     ProductoDto actualizarStock(Long id, Integer stock);
     Producto validarId(Long id);
+    Integer obtenerStock(Long id);
+    void aumentarStock(Long id, Integer cantidad);
+    void disminuirStock(Long id, Integer cantidad);
 }

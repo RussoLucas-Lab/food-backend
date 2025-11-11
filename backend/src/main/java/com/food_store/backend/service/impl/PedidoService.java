@@ -5,11 +5,9 @@ import com.food_store.backend.entity.dto.DetallePedidoDtos.DetalleRequestDto;
 import com.food_store.backend.entity.dto.PedidoDtos.PedidoCreateDto;
 import com.food_store.backend.entity.dto.PedidoDtos.PedidoDto;
 import com.food_store.backend.entity.dto.UsuarioDtos.UsuarioDto;
-import com.food_store.backend.entity.dto.productoDtos.ProductoDto;
 import com.food_store.backend.entity.enums.Estado;
 import com.food_store.backend.entity.mapper.DetallePedidoMapper;
 import com.food_store.backend.entity.mapper.PedidoMapper;
-import com.food_store.backend.entity.mapper.UsuarioMapper;
 import com.food_store.backend.repository.IPedidoRepository;
 import com.food_store.backend.service.IPedidoService;
 import com.food_store.backend.service.IProductoService;
@@ -37,11 +35,23 @@ public class PedidoService implements IPedidoService {
         this.iUsuarioService = iUsuarioService;
     }
 
+    @Override
+    public boolean checkearStock(Long idProducto, Integer stockPedido) {
+        Integer stockProducto = iProductoService.obtenerStock(idProducto);
+        return stockPedido <= stockProducto;
+    }
 
+    @Override
     public PedidoDto crearPedido(PedidoCreateDto pedidoCreateDto) {
 
-        Pedido pedidoCreate = PedidoMapper.toEntity(pedidoCreateDto);
+        // validar stock de los detalles del pedido
+        for (DetalleRequestDto d : pedidoCreateDto.getDetalles()) {
+            if (!checkearStock(d.getProductoId(), d.getCantidad())) {
+                throw new RuntimeException("Stock de " + d.getProductoId() + " insuficeinte");
+            }
+        }
 
+        Pedido pedidoCreate = PedidoMapper.toEntity(pedidoCreateDto);
         String estadoStr = pedidoCreateDto.getEstado();
         if (estadoStr == null || estadoStr.isBlank()) {
             throw new RuntimeException("El campo 'estado' no puede ser nulo");
@@ -59,6 +69,11 @@ public class PedidoService implements IPedidoService {
         }
 
         pedidoCreate.setUsuario(iUsuarioService.validarId(pedidoCreateDto.getIdUsuario()));
+
+        //Actualizo stock
+        for (DetallePedido d : pedidoCreate.getDetalles()) {
+            iProductoService.disminuirStock(d.getProducto().getId(), d.getCantidad());
+        }
         iPedidoRepository.save(pedidoCreate);
 
         return PedidoMapper.toDto(pedidoCreate);
@@ -67,9 +82,10 @@ public class PedidoService implements IPedidoService {
     @Override
     public List<PedidoDto> listarPedidos() {
         return iPedidoRepository.findAll().stream()
-                        .map(PedidoMapper::toDto)
-                        .collect(Collectors.toList());
+                .map(PedidoMapper::toDto)
+                .collect(Collectors.toList());
     }
+
     @Override
     public Pedido validarId(Long id) {
         if (id == null) {
@@ -91,7 +107,7 @@ public class PedidoService implements IPedidoService {
         UsuarioDto usuariosearch = iUsuarioService.buscarPorId(idUsuario);
         List<PedidoDto> pedidosUsuario = new ArrayList<>();
 
-        for (Long id: usuariosearch.getPedidosIds()){
+        for (Long id : usuariosearch.getPedidosIds()) {
             pedidosUsuario.add(buscarPorId(id));
         }
         return pedidosUsuario;
@@ -116,15 +132,25 @@ public class PedidoService implements IPedidoService {
     public PedidoDto actualizarEestadoPedido(Long id, Estado estado) {
         Pedido pedidoUpdate = validarId(id);
 
-        for (Estado e: Estado.values()){
-            if(e.equals(estado)){
+        for (Estado e : Estado.values()) {
+            if (e.equals(estado)) {
                 Estado estadoUpdate = estado;
                 pedidoUpdate.setEstado(estadoUpdate);
+
+                // Si se cancela el pedido, se actualiza el stcok
+                if (pedidoUpdate.getEstado().equals(Estado.CANCELADO)){
+                    for (DetallePedido p : pedidoUpdate.getDetalles()){
+                        iProductoService.aumentarStock(p.getId(),p.getCantidad()) ;
+                    }
+                }
+
                 return PedidoMapper.toDto(iPedidoRepository.save(pedidoUpdate));
+
             }
         }
         throw new ResponseStatusException(
                 HttpStatus.BAD_REQUEST,
                 "Valor de estado del pedido inválido");
+
     }
 }
